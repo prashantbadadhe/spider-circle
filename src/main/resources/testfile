@@ -1,0 +1,111 @@
+@Path("/product-list")
+	@GET
+	@Produces({ "application/json", "application/xml" })
+	@Consumes({ "application/json", "application/xml" })
+	//@formatter:off
+	public Response loadProcutListPage(@Context HttpServletRequest req, @Context HttpServletResponse res,
+			@QueryParam("searchOptionKey") String searchOptionKey,
+			@QueryParam("statusKey") String statusKey,
+			@QueryParam("sSearch") String searchKey, 
+			@QueryParam("sSortDir_0") String sorder, 
+			@QueryParam("iSortCol_0") String scolumnName,
+			@QueryParam("iDisplayStart") long iDisplayStart, 
+			@QueryParam("iDisplayLength") long iDisplayLength) throws ServletException, IOException {
+	//@formatter:on
+		preprocessRequest("Load product list", req, res);
+		if (!DbSession.isValidLogin(dbSession)) {
+			String url = "/logout.do";
+			return redirectToPage(url);
+		}
+		String basePath = req.getContextPath();
+		data.put("contextPath", basePath);
+		DbSession dbSession = DbSession.getSession(req, res, false);
+		String companyId = dbSession.getAttribute(DbSession.COMPANY_ID);
+		String timeZone = dbSession.getAttribute(ProjectConstants.TIME_ZONE);
+
+		String[] cols = { "p.product_title", "p.product_title", "p.product_title", "c.name", "p.sku", "p.updated_at" };
+		int col = 2;
+
+		if (scolumnName != null) {
+			col = Integer.parseInt(scolumnName);
+
+			if (col < 0 || col > 6)
+				col = 2;
+		}
+		String columnName = cols[col];
+		columnName = " " + columnName + " " + sorder + " ";
+
+		searchKey = searchKey.toLowerCase().trim();
+		if (searchKey != null && searchKey.length() == 0) {
+			searchKey = null;
+		} else if (searchKey != null) {
+			searchKey = "%" + searchKey + "%";
+		}
+
+		Map<String, Object> inputMap = new HashMap<String, Object>();
+		inputMap.put("companyId", companyId);
+		inputMap.put("statusKey", statusKey);
+		inputMap.put("searchOptionKey", searchOptionKey);
+		inputMap.put("searchKey", searchKey);
+		inputMap.put("key", ProjectConstants.KEY_IMG_THUMBNAIL);
+		inputMap.put("dataOffset", 0);
+		inputMap.put("dataLimit", iDisplayLength);
+		inputMap.put("columnName", columnName);
+
+		JSONObject jsonObject = new JSONObject();
+		logger.info("before total records");
+		long iTotalRecords = ProductModel.fetchTotalCountOfProductByCompanyId(inputMap);
+		logger.info("iTotal Records " + iTotalRecords);
+		inputMap.put("dataOffset", iDisplayStart);
+		List<ProductModel> productModelList = ProductModel.fetchProductList(inputMap);
+
+		JSONArray array = new JSONArray();
+		if (searchOptionKey.equals(ProjectConstants.PUBLISH) || searchOptionKey.equals("all") || searchOptionKey.equals("deactive")) {
+			for (ProductModel productModel : productModelList) {
+				if (productModel.getIsPreviewed() && (!productModel.getIsPublished()) && searchOptionKey.equals("all")) {
+					array.put(getOutputJsonArrayForPreview(productModel, basePath, timeZone));
+				} else {
+					array.put(getOutputJsonArrayForPublish(productModel, basePath, timeZone));
+				}
+
+			}
+		} else if (searchOptionKey.equals(ProjectConstants.PREVIEW)) {
+
+			for (ProductModel productModel : productModelList) {
+				array.put(getOutputJsonArrayForPreview(productModel, basePath, timeZone));
+
+			}
+		}
+		jsonObject = JQTableUtils.getOutputJsonObject(array, iTotalRecords);
+		return Response.ok(jsonObject.toString()).build();
+
+	}
+
+	private static JSONArray getOutputJsonArrayForPublish(ProductModel productModel, String basePath, String timeZone) throws IOException {
+		JSONArray jsonArray = new JSONArray();
+		String imageName = productModel.getImageUrl();
+		if (imageName == null || imageName.equals("")) {
+			imageName = ProjectConstants.IMG_DEFAULT_THUMBNAIL;
+		}
+		String imgPath = basePath + ProjectConstants.FILE_URL + productModel.getCompanyId() + "/" + imageName + ".media";
+		String imgStr = "<a  class='imgthumbnail'  href='#' title='" + productModel.getProductTitle() + "'><img class='' height='50' width='120' src='" + imgPath + "' />" + "" + "<span><img  src='" + imgPath + "' title='large image' /></span></a>";
+
+		String productId = productModel.getProductId();
+		jsonArray.put(productId);
+		jsonArray.put(imgStr);//product image
+		jsonArray.put(productModel.getProductTitle());
+		jsonArray.put(productModel.getCategoryName());
+		jsonArray.put(productModel.getSku());
+
+		String dateFormat = "dd/MM/yyyy hh:mm a";
+		String formattedDate = getFormattedDateWithTimeZone(productModel.getUpdatedAt(), timeZone, dateFormat);
+		jsonArray.put(formattedDate);
+
+		String btnEditHtmlStr = ViewUtils.outputFormButtonLink(basePath + "/secure/company/products/edit-product.do?productId=" + productId + "&isPublished=true", "edit");
+
+		//		String btnDeleteHtmlStr = ViewUtils.outputFormButtonLink(basePath + "/secure/company/products/delete-product.do?productId=" + productId+"&isPublished=true", "delete");
+		String btnDeleteHtmlStr = "<button id='" + productId + "'class='btn-delete btn btn-xs btn-default' title='Delete'  data-toggle='tooltip'>  <i class='glyphicon glyphicon-trash font-blue'></i>  </button>";
+		jsonArray.put(btnEditHtmlStr);
+		jsonArray.put(btnDeleteHtmlStr);
+		return jsonArray;
+	}

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE tiles-definitions PUBLIC  "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN"  "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">  
+ 
+<tiles-definitions>  
+  
+   <!-- Base Definition -->
+   <definition name="base-definition"
+       template="/WEB-INF/views/tiles/layouts/defaultLayout.jsp">  
+       <put-attribute name="title" value="" />  
+       <put-attribute name="header" value="/WEB-INF/views/tiles/template/defaultHeader.jsp" />  
+       <put-attribute name="menu" value="/WEB-INF/views/tiles/template/defaultMenu.jsp" />  
+       <put-attribute name="body" value="" />  
+       <put-attribute name="footer" value="/WEB-INF/views/tiles/template/defaultFooter.jsp" />  
+   </definition>  
+  <definition name="welcomePage" extends="base-definition">  
+       <put-attribute name="title" value="welcomePage" />  
+       <put-attribute name="body" value="/WEB-INF/views/pages/welcomePage.jsp" />  
+   </definition> 
+   <!-- Login Page -->
+    <definition name="login" extends="base-definition">  
+       <put-attribute name="title" value="login" />  
+       <put-attribute name="body" value="/WEB-INF/views/pages/login.jsp" />  
+   </definition> 
+   <!-- Home Page -->
+   <definition name="userManagement" extends="base-definition">  
+       <put-attribute name="title" value="User Management" />  
+       <put-attribute name="body" value="/WEB-INF/views/pages/UserManagement.jsp" />  
+   </definition>  
+ 
+   <!-- Product Page -->
+   <definition name="dashboard" extends="base-definition">  
+       <put-attribute name="title" value="Dashboard" />  
+       <put-attribute name="body" value="/WEB-INF/views/pages/dashboard.jsp" />  
+   </definition>  
+       
+   <!-- Contact-us Page -->
+   <definition name="contactus" extends="base-definition">  
+       <put-attribute name="title" value="Contact Us" />  
+       <put-attribute name="body" value="/WEB-INF/views/pages/contactus.jsp" />  
+   </definition>  
+  
+     <!-- country-us Page -->
+   <definition name="country" extends="base-definition">  
+       <put-attribute name="title" value="Country" />  
+       <put-attribute name="body" value="/WEB-INF/views/pages/country.jsp" />  
+   </definition>
+   
+        <!-- country-us Page -->
+   <definition name="state" extends="base-definition">  
+       <put-attribute name="title" value="State" />  
+       <put-attribute name="body" value="/WEB-INF/views/pages/state.jsp" />  
+   </definition>
+   
+    <definition name="test" extends="base-definition">  
+       <put-attribute name="title" value="Test" />  
+       <put-attribute name="body" value="/WEB-INF/views/pages/test.jsp" />  
+   </definition> 
+
+     <definition name="district" extends="base-definition">  
+       <put-attribute name="title" value="District" />  
+       <put-attribute name="body" value="/WEB-INF/views/pages/district.jsp" />  
+   </definition> 
+     <definition name="taluka" extends="base-definition">  
+       <put-attribute name="title" value="Taluka" />  
+       <put-attribute name="body" value="/WEB-INF/views/pages/taluka.jsp" />  
+   </definition> 
+         <definition name="ward" extends="base-definition">  
+       <put-attribute name="title" value="Ward" />  
+       <put-attribute name="body" value="/WEB-INF/views/pages/ward.jsp" />  
+   </definition> 
+      <definition name="accessController" extends="base-definition">  
+       <put-attribute name="title" value="accessController" />  
+       <put-attribute name="body" value="/WEB-INF/views/pages/access-controller.jsp" />  
+   </definition>
+         <definition name="village" extends="base-definition">  
+       <put-attribute name="title" value="village" />  
+       <put-attribute name="body" value="/WEB-INF/views/pages/village.jsp" />  
+   </definition>
+            <definition name="aboutus" extends="base-definition">  
+       <put-attribute name="title" value="About us" />  
+       <put-attribute name="body" value="/WEB-INF/views/pages/aboutus.jsp" />  
+   </definition>
+               <definition name="setting" extends="base-definition">  
+       <put-attribute name="title" value="Setting" />  
+       <put-attribute name="body" value="/WEB-INF/views/pages/setting.jsp" />  
+   </definition>
+               <definition name="domain" extends="base-definition">  
+       <put-attribute name="title" value="domain" />  
+       <put-attribute name="body" value="/WEB-INF/views/pages/organization/domain.jsp" />  
+   </definition>
+              <definition name="contactDetail" extends="base-definition">  
+       <put-attribute name="title" value="contactDetail" />  
+       <put-attribute name="body" value="/WEB-INF/views/pages/organization/contactdetail.jsp" />  
+   </definition>
+   
+     <!-- country-us Page -->
+   <definition name="designation" extends="base-definition">  
+       <put-attribute name="title" value="Designation" />  
+       <put-attribute name="body" value="/WEB-INF/views/pages/designation.jsp" />  
+   </definition>
+</tiles-definitions>

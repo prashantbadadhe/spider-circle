@@ -1,0 +1,27 @@
+.bonsai,
+.bonsai li {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+    overflow: hidden;
+}
+.bonsai li {
+	margin: 4px;
+    position: relative;
+    padding-left: 1.3em; /* padding for the thumb */
+}
+li .thumb {
+    margin: 1px 0 0 -1em;  /* negative margin into the padding of the li */
+    position: absolute;
+    cursor: hand;
+}
+li.has-children > .thumb:after {
+    content: '\25b6';
+}
+li.expanded > .thumb:after {
+    content: '\25bc';
+}
+li.collapsed > ol.bonsai {
+	height: 0;
+	overflow: hidden;
+}
